@@ -330,8 +330,7 @@ const Portfolio = () => {
               {[
                 { id: 'home', label: 'Home', icon: User },
                 { id: 'about', label: 'About', icon: User },
-                { id: 'projects', label: 'Projects', icon: Code },
-                { id: 'contact', label: 'Contact', icon: MessageCircle }
+                { id: 'projects', label: 'Projects', icon: Code }
               ].map(({ id, label, icon: Icon }, index) => (
                 <button
                   key={id}

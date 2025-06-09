@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Github, Linkedin, Mail, ExternalLink, Menu, X, Code, User } from 'lucide-react';
 
+// Add type for wheel event
+type Direction = 'up' | 'down' | null;
+
 const Portfolio = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState(0);
   const [isProgrammaticScroll, setIsProgrammaticScroll] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [currentProjectIndex, setCurrentProjectIndex] = useState(0);
-  const [touchStart, setTouchStart] = useState(null);
-  const [touchEnd, setTouchEnd] = useState(null);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
   const sections = ['home', 'about', 'projects'];
 
@@ -29,17 +32,17 @@ const Portfolio = () => {
     if (isMobile) return;
     
     let scrollCount = 0;
-    let scrollDirection = null;
+    let scrollDirection: Direction = null;
     let isScrolling = false;
-    let resetTimer = null;
+    let resetTimer: ReturnType<typeof setTimeout> | null = null;
     const requiredScrolls = 3; // Require 3 distinct scroll actions to change sections
     
-    const handleWheel = (e) => {
+    const handleWheel = (e: WheelEvent) => {
       e.preventDefault();
       
       if (isScrolling) return;
       
-      const currentDirection = e.deltaY > 0 ? 'down' : 'up';
+      const currentDirection: Direction = e.deltaY > 0 ? 'down' : 'up';
       
       // Reset count if direction changes
       if (scrollDirection !== currentDirection) {
@@ -110,7 +113,7 @@ const Portfolio = () => {
   }, [activeSection, isMobile, sections.length]);
 
   // Smooth scroll to section
-  const scrollToSection = (sectionIndex) => {
+  const scrollToSection = (sectionIndex: number) => {
     setActiveSection(sectionIndex);
     setIsProgrammaticScroll(true);
     document.getElementById(sections[sectionIndex])?.scrollIntoView({ behavior: 'smooth' });
@@ -217,12 +220,12 @@ const Portfolio = () => {
   };
 
   // Touch handlers for mobile swipe
-  const handleTouchStart = (e) => {
+  const handleTouchStart = (e: React.TouchEvent) => {
     setTouchEnd(null);
     setTouchStart(e.targetTouches[0].clientX);
   };
 
-  const handleTouchMove = (e) => {
+  const handleTouchMove = (e: React.TouchEvent) => {
     setTouchEnd(e.targetTouches[0].clientX);
   };
 

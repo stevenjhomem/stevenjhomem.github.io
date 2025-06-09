@@ -6,11 +6,29 @@ const Portfolio = () => {
   const [activeSection, setActiveSection] = useState(0);
   const [scrollY, setScrollY] = useState(0);
   const [isProgrammaticScroll, setIsProgrammaticScroll] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [currentProjectIndex, setCurrentProjectIndex] = useState(0);
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
 
-  const sections = ['home', 'about', 'projects', 'contact'];
+  const sections = ['home', 'about', 'projects'];
 
-  // Handle wheel events to control section navigation
+  // Check if mobile on mount
   useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Handle wheel events to control section navigation (desktop only)
+  useEffect(() => {
+    // Only enable custom scroll behavior on desktop
+    if (isMobile) return;
+    
     let scrollCount = 0;
     let scrollDirection = null;
     let isScrolling = false;
@@ -90,7 +108,7 @@ const Portfolio = () => {
       document.removeEventListener('wheel', handleWheel);
       if (resetTimer) clearTimeout(resetTimer);
     };
-  }, [activeSection]);
+  }, [activeSection, isMobile]);
 
   // Smooth scroll to section
   const scrollToSection = (sectionIndex) => {
@@ -187,8 +205,69 @@ const Portfolio = () => {
       github: "https://github.com/stevenjhomem/weather-analytics",
       live: "https://weather.stevenjhomem.dev",
       image: "https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?w=600&h=400&fit=crop"
+    },
+    {
+      title: "AI Chat Application",
+      description: "Modern chat application with AI integration, real-time messaging, and smart conversation features built with React and OpenAI API.",
+      tech: ["React", "OpenAI API", "Node.js", "Socket.io", "Redis"],
+      github: "https://github.com/stevenjhomem/ai-chat-app",
+      live: "https://chat.stevenjhomem.dev",
+      image: "https://images.unsplash.com/photo-1587560699334-cc4ff634909a?w=600&h=400&fit=crop"
+    },
+    {
+      title: "Portfolio Analytics",
+      description: "Advanced analytics dashboard for tracking portfolio performance with interactive charts and real-time data visualization.",
+      tech: ["React", "D3.js", "Chart.js", "Python", "FastAPI"],
+      github: "https://github.com/stevenjhomem/portfolio-analytics",
+      live: "https://analytics.stevenjhomem.dev",
+      image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop"
     }
   ];
+
+  // Carousel navigation functions
+  const nextProject = () => {
+    setCurrentProjectIndex((prev) => (prev + 1) % projects.length);
+  };
+
+  const prevProject = () => {
+    setCurrentProjectIndex((prev) => (prev - 1 + projects.length) % projects.length);
+  };
+
+  // Touch handlers for mobile swipe
+  const handleTouchStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+
+    if (isLeftSwipe) {
+      nextProject();
+    } else if (isRightSwipe) {
+      prevProject();
+    }
+  };
+
+  // Get projects for desktop carousel (current + adjacent)
+  const getDesktopProjects = () => {
+    const prevIndex = (currentProjectIndex - 1 + projects.length) % projects.length;
+    const nextIndex = (currentProjectIndex + 1) % projects.length;
+    
+    return [
+      { ...projects[prevIndex], position: 'prev' },
+      { ...projects[currentProjectIndex], position: 'current' },
+      { ...projects[nextIndex], position: 'next' }
+    ];
+  };
 
   const skills = [
     { category: "Frontend", items: ["React", "Next.js", "TypeScript", "Tailwind CSS", "Vue.js"] },
@@ -198,7 +277,7 @@ const Portfolio = () => {
   ];
 
   return (
-    <div className="h-screen overflow-hidden scrollbar-hide bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div className="h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 md:overflow-hidden overflow-y-auto scrollbar-hide">
       <style jsx>{`
         .scrollbar-hide {
           -ms-overflow-style: none;
@@ -209,6 +288,33 @@ const Portfolio = () => {
         }
         .fade-section {
           transition: opacity 0.4s ease-in-out;
+        }
+        
+        /* Fix mobile viewport issues */
+        .mobile-section {
+          min-height: 100vh;
+          min-height: 100dvh;
+        }
+        
+        /* Desktop sections */
+        @media (min-width: 768px) {
+          .mobile-section {
+            height: 100vh;
+            height: 100dvh;
+          }
+        }
+        
+        /* Ensure proper mobile viewport */
+        @supports (-webkit-touch-callout: none) {
+          .mobile-section {
+            min-height: -webkit-fill-available;
+          }
+          
+          @media (min-width: 768px) {
+            .mobile-section {
+              height: -webkit-fill-available;
+            }
+          }
         }
       `}</style>
       {/* Navigation */}
@@ -273,8 +379,7 @@ const Portfolio = () => {
       {/* Hero Section */}
       <section 
         id="home" 
-        className="h-screen flex items-center justify-center px-4 fade-section"
-        style={{ opacity: getSectionOpacity(0) }}
+        className={`mobile-section flex items-center justify-center px-4 fade-section pt-20 md:pt-0 ${!isMobile ? (activeSection === 0 ? 'block' : 'hidden') : 'block'}`}
       >
         <div className="text-center max-w-4xl mx-auto">
           <div className="mb-8">
@@ -297,10 +402,15 @@ const Portfolio = () => {
             >
               View My Work
             </button>
-            <button className="border border-purple-400 text-purple-400 px-8 py-3 rounded-lg font-semibold hover:bg-purple-400 hover:text-white transition-all flex items-center justify-center space-x-2">
-              <Download size={20} />
-              <span>Download Resume</span>
-            </button>
+            <a 
+              href="https://docs.google.com/document/d/16KWzcQGSUxSWBZrgoUnTye2oNe_LOWDhvi5BG-SfIr0/edit?usp=sharing"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="border border-purple-400 text-purple-400 px-8 py-3 rounded-lg font-semibold hover:bg-purple-400 hover:text-white transition-all flex items-center justify-center space-x-2"
+            >
+              <ExternalLink size={20} />
+              <span>View My Resume</span>
+            </a>
           </div>
 
           <div className="flex justify-center space-x-6 mt-12">
@@ -320,11 +430,10 @@ const Portfolio = () => {
       {/* About Section */}
       <section 
         id="about" 
-        className="h-screen flex items-center justify-center px-4 fade-section"
-        style={{ opacity: getSectionOpacity(1) }}
+        className={`mobile-section flex items-center justify-center px-4 fade-section pt-20 md:pt-0 ${!isMobile ? (activeSection === 1 ? 'block' : 'hidden') : 'block'}`}
       >
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl font-bold text-white text-center mb-16">About Me</h2>
+          <h2 className="text-4xl font-bold text-white text-center mb-4 md:mb-16">About Me</h2>
           
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
@@ -363,25 +472,30 @@ const Portfolio = () => {
       {/* Projects Section */}
       <section 
         id="projects" 
-        className="h-screen flex items-center justify-center px-4 fade-section overflow-hidden"
-        style={{ opacity: getSectionOpacity(2) }}
+        className={`mobile-section flex items-center justify-center px-4 fade-section overflow-hidden pt-20 md:pt-0 ${!isMobile ? (activeSection === 2 ? 'block' : 'hidden') : 'block'}`}
       >
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl font-bold text-white text-center mb-16">Featured Projects</h2>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {projects.map((project, index) => (
-              <div key={index} className="bg-white/5 backdrop-blur-sm rounded-xl overflow-hidden border border-white/10 hover:border-purple-400/50 transition-all group">
+          {/* Mobile Carousel - Single Project */}
+          <div className="md:hidden">
+            <div className="relative">
+              <div 
+                className="bg-white/5 backdrop-blur-sm rounded-xl overflow-hidden border border-white/10 hover:border-purple-400/50 transition-all"
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+              >
                 <div className="h-48 bg-gradient-to-br from-purple-600/20 to-pink-600/20 flex items-center justify-center">
-                  <img src={project.image} alt={project.title} className="w-full h-full object-cover" />
+                  <img src={projects[currentProjectIndex].image} alt={projects[currentProjectIndex].title} className="w-full h-full object-cover" />
                 </div>
                 
                 <div className="p-6">
-                  <h3 className="text-xl font-bold text-white mb-3">{project.title}</h3>
-                  <p className="text-gray-300 mb-4 leading-relaxed text-sm">{project.description}</p>
+                  <h3 className="text-xl font-bold text-white mb-3">{projects[currentProjectIndex].title}</h3>
+                  <p className="text-gray-300 mb-4 leading-relaxed text-sm">{projects[currentProjectIndex].description}</p>
                   
                   <div className="flex flex-wrap gap-2 mb-4">
-                    {project.tech.map((tech, techIndex) => (
+                    {projects[currentProjectIndex].tech.map((tech, techIndex) => (
                       <span key={techIndex} className="bg-purple-600/20 text-purple-400 px-2 py-1 rounded text-xs">
                         {tech}
                       </span>
@@ -389,58 +503,103 @@ const Portfolio = () => {
                   </div>
                   
                   <div className="flex space-x-4">
-                    <a href={project.github} className="text-gray-400 hover:text-white transition-colors">
+                    <a href={projects[currentProjectIndex].github} className="text-gray-400 hover:text-white transition-colors">
                       <Github size={20} />
                     </a>
-                    <a href={project.live} className="text-gray-400 hover:text-white transition-colors">
+                    <a href={projects[currentProjectIndex].live} className="text-gray-400 hover:text-white transition-colors">
                       <ExternalLink size={20} />
                     </a>
                   </div>
                 </div>
               </div>
-            ))}
+              
+              {/* Mobile Dots Indicator */}
+              <div className="flex justify-center mt-6 space-x-2">
+                {projects.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentProjectIndex(index)}
+                    className={`w-3 h-3 rounded-full transition-all ${
+                      index === currentProjectIndex ? 'bg-purple-400' : 'bg-gray-600'
+                    }`}
+                  />
+                ))}
+              </div>
+            </div>
           </div>
-        </div>
-      </section>
 
-      {/* Contact Section */}
-      <section 
-        id="contact" 
-        className="h-screen flex items-center justify-center px-4 fade-section"
-        style={{ opacity: getSectionOpacity(3) }}
-      >
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl font-bold text-white mb-8">Let's Work Together</h2>
-          <p className="text-xl text-gray-300 mb-12">
-            I'm always interested in new opportunities and exciting projects. Let's connect!
-          </p>
-          
-          <div className="grid md:grid-cols-3 gap-8 mb-12">
-            <div className="bg-white/5 backdrop-blur-sm rounded-lg p-6 border border-white/10">
-              <Mail className="mx-auto mb-4 text-purple-400" size={32} />
-              <h3 className="text-white font-semibold mb-2">Email</h3>
-              <p className="text-gray-300">steven@stevenjhomem.dev</p>
-            </div>
-            
-            <div className="bg-white/5 backdrop-blur-sm rounded-lg p-6 border border-white/10">
-              <Linkedin className="mx-auto mb-4 text-purple-400" size={32} />
-              <h3 className="text-white font-semibold mb-2">LinkedIn</h3>
-              <p className="text-gray-300">linkedin.com/in/stevenjhomem</p>
-            </div>
-            
-            <div className="bg-white/5 backdrop-blur-sm rounded-lg p-6 border border-white/10">
-              <Github className="mx-auto mb-4 text-purple-400" size={32} />
-              <h3 className="text-white font-semibold mb-2">GitHub</h3>
-              <p className="text-gray-300">github.com/stevenjhomem</p>
+          {/* Desktop Carousel - Three Projects */}
+          <div className="hidden md:block">
+            <div className="relative">
+              <div className="flex items-center justify-center space-x-8">
+                {getDesktopProjects().map((project, index) => (
+                  <div 
+                    key={index}
+                    className={`transition-all duration-500 ${
+                      project.position === 'current' 
+                        ? 'scale-100 opacity-100 z-10' 
+                        : 'scale-75 opacity-40 hover:opacity-60'
+                    } ${project.position === 'prev' ? '-translate-x-4' : project.position === 'next' ? 'translate-x-4' : ''}`}
+                  >
+                    <div className="bg-white/5 backdrop-blur-sm rounded-xl overflow-hidden border border-white/10 hover:border-purple-400/50 transition-all w-80">
+                      <div className="h-48 bg-gradient-to-br from-purple-600/20 to-pink-600/20 flex items-center justify-center">
+                        <img src={project.image} alt={project.title} className="w-full h-full object-cover" />
+                      </div>
+                      
+                      <div className="p-6">
+                        <h3 className="text-xl font-bold text-white mb-3">{project.title}</h3>
+                        <p className="text-gray-300 mb-4 leading-relaxed text-sm">{project.description}</p>
+                        
+                        <div className="flex flex-wrap gap-2 mb-4">
+                          {project.tech.map((tech, techIndex) => (
+                            <span key={techIndex} className="bg-purple-600/20 text-purple-400 px-2 py-1 rounded text-xs">
+                              {tech}
+                            </span>
+                          ))}
+                        </div>
+                        
+                        <div className="flex space-x-4">
+                          <a href={project.github} className="text-gray-400 hover:text-white transition-colors">
+                            <Github size={20} />
+                          </a>
+                          <a href={project.live} className="text-gray-400 hover:text-white transition-colors">
+                            <ExternalLink size={20} />
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              {/* Desktop Navigation */}
+              <button 
+                onClick={prevProject}
+                className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-all"
+              >
+                <span className="text-2xl font-bold">‹</span>
+              </button>
+              <button 
+                onClick={nextProject}
+                className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-all"
+              >
+                <span className="text-2xl font-bold">›</span>
+              </button>
+              
+              {/* Desktop Dots Indicator */}
+              <div className="flex justify-center mt-8 space-x-3">
+                {projects.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentProjectIndex(index)}
+                    className={`w-4 h-4 rounded-full transition-all ${
+                      index === currentProjectIndex ? 'bg-purple-400' : 'bg-gray-600 hover:bg-gray-500'
+                    }`}
+                  />
+                ))}
+              </div>
             </div>
           </div>
-          
-          <a 
-            href="mailto:steven@stevenjhomem.dev"
-            className="inline-block bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition-all transform hover:scale-105"
-          >
-            Get In Touch
-          </a>
         </div>
       </section>
 

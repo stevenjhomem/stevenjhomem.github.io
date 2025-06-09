@@ -164,6 +164,22 @@ const Portfolio = () => {
     return () => observer.disconnect();
   }, [isProgrammaticScroll, sections]);
 
+  // Calculate opacity for smooth fade effect
+  const getSectionOpacity = (sectionIndex) => {
+    // Simple approach: current active section gets full opacity, others fade
+    if (sectionIndex === activeSection) {
+      return 1; // Current section is fully visible
+    }
+    
+    // Adjacent sections get partial opacity
+    const distance = Math.abs(sectionIndex - activeSection);
+    if (distance === 1) {
+      return 0.6; // Adjacent sections
+    }
+    
+    return 0.3; // All other sections
+  };
+
   const projects = [
     {
       title: "E-Commerce Platform",
@@ -313,7 +329,7 @@ const Portfolio = () => {
               {[
                 { id: 'home', label: 'Home', icon: User },
                 { id: 'about', label: 'About', icon: User },
-                { id: 'projects', label: 'Projects', icon: Code },
+                { id: 'projects', label: 'Projects', icon: Code }
               ].map(({ id, label, icon: Icon }, index) => (
                 <button
                   key={id}

@@ -164,22 +164,6 @@ const Portfolio = () => {
     return () => observer.disconnect();
   }, [isProgrammaticScroll, sections]);
 
-  // Calculate opacity for smooth fade effect
-  const getSectionOpacity = (sectionIndex) => {
-    // Simple approach: current active section gets full opacity, others fade
-    if (sectionIndex === activeSection) {
-      return 1; // Current section is fully visible
-    }
-    
-    // Adjacent sections get partial opacity
-    const distance = Math.abs(sectionIndex - activeSection);
-    if (distance === 1) {
-      return 0.6; // Adjacent sections
-    }
-    
-    return 0.3; // All other sections
-  };
-
   const projects = [
     {
       title: "E-Commerce Platform",
@@ -436,7 +420,7 @@ const Portfolio = () => {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
               <p className="text-gray-300 text-lg leading-relaxed">
-                I'm a passionate full-stack developer with a strong focus on creating efficient, scalable web applications. 
+                I&apos;m a passionate full-stack developer with a strong focus on creating efficient, scalable web applications. 
                 My journey in tech has led me to explore the intersection of traditional development and AI-assisted workflows.
               </p>
               <p className="text-gray-300 text-lg leading-relaxed">

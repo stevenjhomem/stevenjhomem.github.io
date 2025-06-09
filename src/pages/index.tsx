@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Github, Linkedin, Mail, ExternalLink, Download, Menu, X, Code, Briefcase, User, MessageCircle } from 'lucide-react';
+import { Github, Linkedin, Mail, ExternalLink, Menu, X, Code, User } from 'lucide-react';
 
 const Portfolio = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState(0);
-  const [scrollY, setScrollY] = useState(0);
   const [isProgrammaticScroll, setIsProgrammaticScroll] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [currentProjectIndex, setCurrentProjectIndex] = useState(0);
@@ -108,7 +107,7 @@ const Portfolio = () => {
       document.removeEventListener('wheel', handleWheel);
       if (resetTimer) clearTimeout(resetTimer);
     };
-  }, [activeSection, isMobile]);
+  }, [activeSection, isMobile, sections.length]);
 
   // Smooth scroll to section
   const scrollToSection = (sectionIndex) => {
@@ -163,7 +162,7 @@ const Portfolio = () => {
     }
 
     return () => observer.disconnect();
-  }, [isProgrammaticScroll]);
+  }, [isProgrammaticScroll, sections]);
 
   // Calculate opacity for smooth fade effect
   const getSectionOpacity = (sectionIndex) => {
@@ -330,7 +329,7 @@ const Portfolio = () => {
               {[
                 { id: 'home', label: 'Home', icon: User },
                 { id: 'about', label: 'About', icon: User },
-                { id: 'projects', label: 'Projects', icon: Code }
+                { id: 'projects', label: 'Projects', icon: Code },
               ].map(({ id, label, icon: Icon }, index) => (
                 <button
                   key={id}
@@ -486,6 +485,7 @@ const Portfolio = () => {
                 onTouchEnd={handleTouchEnd}
               >
                 <div className="h-48 bg-gradient-to-br from-purple-600/20 to-pink-600/20 flex items-center justify-center">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={projects[currentProjectIndex].image} alt={projects[currentProjectIndex].title} className="w-full h-full object-cover" />
                 </div>
                 
@@ -542,6 +542,7 @@ const Portfolio = () => {
                   >
                     <div className="bg-white/5 backdrop-blur-sm rounded-xl overflow-hidden border border-white/10 hover:border-purple-400/50 transition-all w-80">
                       <div className="h-48 bg-gradient-to-br from-purple-600/20 to-pink-600/20 flex items-center justify-center">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={project.image} alt={project.title} className="w-full h-full object-cover" />
                       </div>
                       

@@ -5,6 +5,7 @@ const Portfolio = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState(0);
   const [scrollY, setScrollY] = useState(0);
+  const [isProgrammaticScroll, setIsProgrammaticScroll] = useState(false);
 
   const sections = ['home', 'about', 'projects', 'contact'];
 
@@ -49,6 +50,7 @@ const Portfolio = () => {
           // Scroll down - go to next section
           const nextSection = activeSection + 1;
           setActiveSection(nextSection);
+          setIsProgrammaticScroll(true);
           document.getElementById(sections[nextSection])?.scrollIntoView({ 
             behavior: 'smooth'
           });
@@ -57,12 +59,16 @@ const Portfolio = () => {
           scrollCount = 0;
           scrollDirection = null;
           isScrolling = true;
-          setTimeout(() => { isScrolling = false; }, 2000);
+          setTimeout(() => { 
+            isScrolling = false;
+            setIsProgrammaticScroll(false);
+          }, 3000);
           
         } else if (currentDirection === 'up' && activeSection > 0) {
           // Scroll up - go to previous section
           const prevSection = activeSection - 1;
           setActiveSection(prevSection);
+          setIsProgrammaticScroll(true);
           document.getElementById(sections[prevSection])?.scrollIntoView({ 
             behavior: 'smooth'
           });
@@ -71,7 +77,10 @@ const Portfolio = () => {
           scrollCount = 0;
           scrollDirection = null;
           isScrolling = true;
-          setTimeout(() => { isScrolling = false; }, 2000);
+          setTimeout(() => { 
+            isScrolling = false;
+            setIsProgrammaticScroll(false);
+          }, 3000);
         }
       }
     };
@@ -86,35 +95,57 @@ const Portfolio = () => {
   // Smooth scroll to section
   const scrollToSection = (sectionIndex) => {
     setActiveSection(sectionIndex);
+    setIsProgrammaticScroll(true);
     document.getElementById(sections[sectionIndex])?.scrollIntoView({ behavior: 'smooth' });
     setIsMenuOpen(false);
+    
+    // Re-enable observer after scroll completes with longer delay
+    setTimeout(() => {
+      setIsProgrammaticScroll(false);
+    }, 2500);
   };
 
   // Track scroll and determine active section with fade calculations
   useEffect(() => {
-    // Also let's try using Intersection Observer as backup
+    // Intersection Observer - only active when not programmatically scrolling
     const observer = new IntersectionObserver(
       (entries) => {
+        // Completely skip all intersection updates during programmatic scrolling
+        if (isProgrammaticScroll) return;
+        
+        // Only update if we're not in the middle of any smooth scrolling
+        let mostVisibleSection = null;
+        let maxVisibility = 0;
+        
         entries.forEach((entry) => {
-          if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+          if (entry.isIntersecting && entry.intersectionRatio > maxVisibility) {
+            maxVisibility = entry.intersectionRatio;
             const sectionId = entry.target.id;
             const sectionIndex = sections.indexOf(sectionId);
             if (sectionIndex !== -1) {
-              setActiveSection(sectionIndex);
+              mostVisibleSection = sectionIndex;
             }
           }
         });
+        
+        // Only update if we found a clearly visible section (>70% visible)
+        if (mostVisibleSection !== null && maxVisibility > 0.7) {
+          setActiveSection(mostVisibleSection);
+        }
       },
-      { threshold: [0.5] }
+      { threshold: [0.1, 0.3, 0.5, 0.7, 0.9] }
     );
 
-    sections.forEach((sectionId) => {
-      const element = document.getElementById(sectionId);
-      if (element) observer.observe(element);
-    });
+    // Only observe sections when not programmatically scrolling
+    if (!isProgrammaticScroll) {
+      sections.forEach((sectionId) => {
+        const element = document.getElementById(sectionId);
+        if (element) observer.observe(element);
+      });
+    }
 
     return () => observer.disconnect();
-  }, []);
+  }, [isProgrammaticScroll]);
 
   // Calculate opacity for smooth fade effect
   const getSectionOpacity = (sectionIndex) => {

@@ -161,8 +161,7 @@ const Portfolio = () => {
     {
       title: "Banana Eco-Camp",
       description: "A custom web application designed to establish Banana Eco Camp&apos;s independent digital presence, consolidating their scattered " +
-      "third-party listings into a cohesive, brand-controlled booking ecosystem. The platform transforms a platform-dependent glamping business into a " + 
-      "self-sufficient operation with direct customer relationships and streamlined operations.",
+      "third-party listings into a cohesive, brand-controlled booking ecosystem.",
       tech: ["Next.js", "Tailwind CSS", "Framer Motion", "Firebase", "Stripe", "Resend"],
       github: "",
       live: "",

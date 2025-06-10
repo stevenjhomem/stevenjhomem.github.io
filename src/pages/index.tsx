@@ -151,8 +151,7 @@ const Portfolio = () => {
     {
       title: "Kindred Barn",
       description: "Developing a more comprehensive user management and reservation system for a Squarespace-based business, implementing " +
-        "custom workflows that extend beyond the platform's current native capabilities. The solution provides seamless user experiences while " +
-        "maintaining the client's existing design and branding.",
+        "custom workflows that extend beyond the platform's current native capabilities.",
       tech: ["SquareSpace"],
       github: "",
       live: "https://www.kindredbarn.com/",

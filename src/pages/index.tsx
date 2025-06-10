@@ -17,10 +17,7 @@ const Portfolio = () => {
 
   // Check if mobile on mount
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
@@ -28,76 +25,47 @@ const Portfolio = () => {
 
   // Handle wheel events to control section navigation (desktop only)
   useEffect(() => {
-    // Only enable custom scroll behavior on desktop
     if (isMobile) return;
     
     let scrollCount = 0;
     let scrollDirection: Direction = null;
     let isScrolling = false;
     let resetTimer: ReturnType<typeof setTimeout> | null = null;
-    const requiredScrolls = 3; // Require 3 distinct scroll actions to change sections
+    const requiredScrolls = 3;
     
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault();
-      
       if (isScrolling) return;
       
       const currentDirection: Direction = e.deltaY > 0 ? 'down' : 'up';
       
-      // Reset count if direction changes
       if (scrollDirection !== currentDirection) {
         scrollCount = 0;
         scrollDirection = currentDirection;
       }
       
-      // Increment scroll count
       scrollCount++;
+      if (resetTimer) clearTimeout(resetTimer);
       
-      // Clear existing reset timer
-      if (resetTimer) {
-        clearTimeout(resetTimer);
-      }
-      
-      // Reset scroll count if user stops scrolling for 500ms
       resetTimer = setTimeout(() => {
         scrollCount = 0;
         scrollDirection = null;
       }, 500);
       
-      // Only change sections after required number of scrolls
       if (scrollCount >= requiredScrolls) {
-        if (currentDirection === 'down' && activeSection < sections.length - 1) {
-          // Scroll down - go to next section
-          const nextSection = activeSection + 1;
+        const nextSection = currentDirection === 'down' ? 
+          Math.min(activeSection + 1, sections.length - 1) : 
+          Math.max(activeSection - 1, 0);
+
+        if (nextSection !== activeSection) {
           setActiveSection(nextSection);
           setIsProgrammaticScroll(true);
-          document.getElementById(sections[nextSection])?.scrollIntoView({ 
-            behavior: 'smooth'
-          });
+          document.getElementById(sections[nextSection])?.scrollIntoView({ behavior: 'smooth' });
           
-          // Reset everything and block for 2 seconds
           scrollCount = 0;
           scrollDirection = null;
           isScrolling = true;
-          setTimeout(() => { 
-            isScrolling = false;
-            setIsProgrammaticScroll(false);
-          }, 3000);
-          
-        } else if (currentDirection === 'up' && activeSection > 0) {
-          // Scroll up - go to previous section
-          const prevSection = activeSection - 1;
-          setActiveSection(prevSection);
-          setIsProgrammaticScroll(true);
-          document.getElementById(sections[prevSection])?.scrollIntoView({ 
-            behavior: 'smooth'
-          });
-          
-          // Reset everything and block for 2 seconds
-          scrollCount = 0;
-          scrollDirection = null;
-          isScrolling = true;
-          setTimeout(() => { 
+          setTimeout(() => {
             isScrolling = false;
             setIsProgrammaticScroll(false);
           }, 3000);
@@ -118,51 +86,36 @@ const Portfolio = () => {
     setIsProgrammaticScroll(true);
     document.getElementById(sections[sectionIndex])?.scrollIntoView({ behavior: 'smooth' });
     setIsMenuOpen(false);
-    
-    // Re-enable observer after scroll completes with longer delay
-    setTimeout(() => {
-      setIsProgrammaticScroll(false);
-    }, 2500);
+    setTimeout(() => setIsProgrammaticScroll(false), 2500);
   };
 
   // Track scroll and determine active section with fade calculations
   useEffect(() => {
-    // Intersection Observer - only active when not programmatically scrolling
+    if (isProgrammaticScroll) return;
+
     const observer = new IntersectionObserver(
       (entries) => {
-        // Completely skip all intersection updates during programmatic scrolling
         if (isProgrammaticScroll) return;
         
-        // Only update if we're not in the middle of any smooth scrolling
-        let mostVisibleSection = null;
-        let maxVisibility = 0;
-        
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && entry.intersectionRatio > maxVisibility) {
-            maxVisibility = entry.intersectionRatio;
-            const sectionId = entry.target.id;
-            const sectionIndex = sections.indexOf(sectionId);
-            if (sectionIndex !== -1) {
-              mostVisibleSection = sectionIndex;
-            }
+        const mostVisible = entries.reduce((acc, entry) => {
+          if (entry.isIntersecting && entry.intersectionRatio > acc.visibility) {
+            const sectionIndex = sections.indexOf(entry.target.id);
+            return sectionIndex !== -1 ? { index: sectionIndex, visibility: entry.intersectionRatio } : acc;
           }
-        });
+          return acc;
+        }, { index: -1, visibility: 0 });
         
-        // Only update if we found a clearly visible section (>70% visible)
-        if (mostVisibleSection !== null && maxVisibility > 0.7) {
-          setActiveSection(mostVisibleSection);
+        if (mostVisible.index !== -1 && mostVisible.visibility > 0.7) {
+          setActiveSection(mostVisible.index);
         }
       },
       { threshold: [0.1, 0.3, 0.5, 0.7, 0.9] }
     );
 
-    // Only observe sections when not programmatically scrolling
-    if (!isProgrammaticScroll) {
-      sections.forEach((sectionId) => {
-        const element = document.getElementById(sectionId);
-        if (element) observer.observe(element);
-      });
-    }
+    sections.forEach(sectionId => {
+      const element = document.getElementById(sectionId);
+      if (element) observer.observe(element);
+    });
 
     return () => observer.disconnect();
   }, [isProgrammaticScroll, sections]);
@@ -211,13 +164,8 @@ const Portfolio = () => {
   ];
 
   // Carousel navigation functions
-  const nextProject = () => {
-    setCurrentProjectIndex((prev) => (prev + 1) % projects.length);
-  };
-
-  const prevProject = () => {
-    setCurrentProjectIndex((prev) => (prev - 1 + projects.length) % projects.length);
-  };
+  const nextProject = () => setCurrentProjectIndex((prev) => (prev + 1) % projects.length);
+  const prevProject = () => setCurrentProjectIndex((prev) => (prev - 1 + projects.length) % projects.length);
 
   // Touch handlers for mobile swipe
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -225,21 +173,13 @@ const Portfolio = () => {
     setTouchStart(e.targetTouches[0].clientX);
   };
 
-  const handleTouchMove = (e: React.TouchEvent) => {
-    setTouchEnd(e.targetTouches[0].clientX);
-  };
+  const handleTouchMove = (e: React.TouchEvent) => setTouchEnd(e.targetTouches[0].clientX);
 
   const handleTouchEnd = () => {
     if (!touchStart || !touchEnd) return;
-    
     const distance = touchStart - touchEnd;
-    const isLeftSwipe = distance > 50;
-    const isRightSwipe = distance < -50;
-
-    if (isLeftSwipe) {
-      nextProject();
-    } else if (isRightSwipe) {
-      prevProject();
+    if (Math.abs(distance) > 50) {
+      distance > 0 ? nextProject() : prevProject();
     }
   };
 
@@ -256,10 +196,10 @@ const Portfolio = () => {
   };
 
   const skills = [
-    { category: "Frontend", items: ["React", "Next.js", "TypeScript", "Tailwind CSS", "Vue.js"] },
-    { category: "Backend", items: ["Node.js", "Python", "PostgreSQL", "MongoDB", "Express"] },
-    { category: "Tools", items: ["Git", "Docker", "AWS", "Vercel", "Figma"] },
-    { category: "AI/ML", items: ["Claude", "OpenAI API", "LangChain", "Prompt Engineering"] }
+    { category: "Frontend", items: ["React", "Next.js", "TypeScript", "ElasticUI", "Vue.js", "Angular.js", "Jest", "Playwright"] },
+    { category: "Backend", items: ["Node.js", "Python", "Django", "Django Ninja", "FastAPI", "PostgreSQL", "Express"] },
+    { category: "Infrastructure & DevOps", items: ["Git", "Docker", "Kubernetes", "Argo Workflows", "Linux"] },
+    { category: "Observability & Logging", items: ["Splunk", "OpenSearch", "ElasticSearch", "Logstash", "Kibana"] }
   ];
 
   return (
@@ -361,7 +301,7 @@ const Portfolio = () => {
         )}
       </nav>
 
-      {/* Hero Section */}
+      {/* Home Section */}
       <section 
         id="home" 
         className={`mobile-section flex items-center justify-center px-4 fade-section pt-20 md:pt-0 ${!isMobile ? (activeSection === 0 ? 'block' : 'hidden') : 'block'}`}
@@ -377,7 +317,7 @@ const Portfolio = () => {
             Full-Stack Developer
           </h1>
           <p className="text-xl md:text-2xl text-gray-300 mb-8 leading-relaxed">
-            Building modern web applications with cutting-edge technologies and AI integration
+            Developing technological solutions as well as the talent behind them.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -399,10 +339,10 @@ const Portfolio = () => {
           </div>
 
           <div className="flex justify-center space-x-6 mt-12">
-            <a href="https://github.com/stevenjhomem" className="text-gray-400 hover:text-white transition-colors">
+            <a href="https://github.com/stevenjhomem" className="text-gray-400 hover:text-white transition-colors" target="_blank" rel="noopener noreferrer">
               <Github size={24} />
             </a>
-            <a href="https://linkedin.com/in/stevenjhomem" className="text-gray-400 hover:text-white transition-colors">
+            <a href="https://linkedin.com/in/stevenjhomem" className="text-gray-400 hover:text-white transition-colors" target="_blank" rel="noopener noreferrer">
               <Linkedin size={24} />
             </a>
             <a href="mailto:steven@stevenjhomem.dev" className="text-gray-400 hover:text-white transition-colors">
@@ -419,21 +359,22 @@ const Portfolio = () => {
       >
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl font-bold text-white text-center mb-4 md:mb-16">About Me</h2>
-          
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
               <p className="text-gray-300 text-lg leading-relaxed">
-                I&apos;m a passionate full-stack developer with a strong focus on creating efficient, scalable web applications. 
-                My journey in tech has led me to explore the intersection of traditional development and AI-assisted workflows.
+                I am a passionate full-stack developer driven by dual missions: creating exceptional web applications and 
+                cultivating the people who build them. My technical expertise spans modern JavaScript and Python frameworks, 
+                cloud and containerization technologies, and Cybersecurity but I'm equally invested in helping teams and 
+                individuals thrive in their careers. 
               </p>
               <p className="text-gray-300 text-lg leading-relaxed">
-                I specialize in modern JavaScript frameworks, cloud technologies, and have recently been diving deep into 
-                AI integration and prompt engineering. I believe in leveraging AI tools like Claude to enhance productivity 
-                and solve complex problems more efficiently.
+                I believe technology is only as strong as the people behind it. Whether I'm architecting scalable 
+                applications or mentoring emerging developers, I approach each challenge with the same dedication 
+                I bring to training for ultra marathons—persistence, strategic thinking, and a commitment to going the distance.
               </p>
               <div className="flex flex-wrap gap-2">
                 <span className="bg-purple-600/20 text-purple-400 px-3 py-1 rounded-full text-sm">Problem Solver</span>
-                <span className="bg-purple-600/20 text-purple-400 px-3 py-1 rounded-full text-sm">AI Enthusiast</span>
+                <span className="bg-purple-600/20 text-purple-400 px-3 py-1 rounded-full text-sm">Curious</span>
                 <span className="bg-purple-600/20 text-purple-400 px-3 py-1 rounded-full text-sm">Continuous Learner</span>
               </div>
             </div>
@@ -442,7 +383,7 @@ const Portfolio = () => {
               {skills.map((skillGroup, index) => (
                 <div key={index} className="bg-white/5 backdrop-blur-sm rounded-lg p-6 border border-white/10">
                   <h3 className="text-purple-400 font-semibold mb-3">{skillGroup.category}</h3>
-                  <ul className="space-y-2">
+                  <ul className="grid grid-cols-2 gap-x-4 gap-y-2">
                     {skillGroup.items.map((skill, skillIndex) => (
                       <li key={skillIndex} className="text-gray-300 text-sm">{skill}</li>
                     ))}

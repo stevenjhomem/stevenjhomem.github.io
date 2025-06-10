@@ -151,12 +151,22 @@ const Portfolio = () => {
     {
       title: "Kindred Barn",
       description: "Developing a more comprehensive user management and reservation system for a Squarespace-based business, implementing " +
-        "custom workflows that extend beyond the platform&apos;s current native capabilities. The solution provides seamless user experiences while " +
-        "maintaining the client&apos;s existing design and branding.",
+        "custom workflows that extend beyond the platform's current native capabilities. The solution provides seamless user experiences while " +
+        "maintaining the client's existing design and branding.",
       tech: ["SquareSpace"],
       github: "",
       live: "https://www.kindredbarn.com/",
       image: "/images/kindred_barn_logo.png"
+    },
+    {
+      title: "Banana Eco-Camp",
+      description: "A custom web application designed to establish Banana Eco Camp&apos;s independent digital presence, consolidating their scattered " +
+      "third-party listings into a cohesive, brand-controlled booking ecosystem. The platform transforms a platform-dependent glamping business into a " + 
+      "self-sufficient operation with direct customer relationships and streamlined operations.",
+      tech: ["Next.js", "Tailwind CSS", "Framer Motion", "Firebase", "Stripe", "Resend"],
+      github: "",
+      live: "",
+      image: "/images/banana_eco_camp_logo.png"
     }
   ];
 

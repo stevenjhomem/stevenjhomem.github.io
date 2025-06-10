@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Github, Linkedin, Mail, ExternalLink, Menu, X, Code, User } from 'lucide-react';
 
 // Add type for wheel event
@@ -24,7 +24,7 @@ const Portfolio = () => {
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
-  const sections = ['home', 'about', 'projects'];
+  const sections = useMemo(() => ['home', 'about', 'projects'], []);
 
   // Check if mobile on mount
   useEffect(() => {
@@ -151,8 +151,8 @@ const Portfolio = () => {
     {
       title: "Kindred Barn",
       description: "Developing a more comprehensive user management and reservation system for a Squarespace-based business, implementing " +
-      "custom workflows that extend beyond the platform's current native capabilities. The solution provides seamless user experiences while " +
-      "maintaining the client's existing design and branding.",
+      "custom workflows that extend beyond the platform&apos;s current native capabilities. The solution provides seamless user experiences while " +
+      "maintaining the client&apos;s existing design and branding.",
       tech: ["SquareSpace"],
       github: "",
       live: "https://www.kindredbarn.com/",
@@ -361,11 +361,11 @@ const Portfolio = () => {
               <p className="text-gray-300 text-lg leading-relaxed">
                 I am a passionate full-stack developer driven by dual missions: creating exceptional web applications and 
                 cultivating the people who build them. My technical expertise spans modern JavaScript and Python frameworks, 
-                cloud and containerization technologies, and Cybersecurity but I'm equally invested in helping teams and 
+                cloud and containerization technologies, and Cybersecurity but I&apos;m equally invested in helping teams and 
                 individuals thrive in their careers. 
               </p>
               <p className="text-gray-300 text-lg leading-relaxed">
-                I believe technology is only as strong as the people behind it. Whether I'm architecting scalable 
+                I believe technology is only as strong as the people behind it. Whether I&apos;m architecting scalable 
                 applications or mentoring emerging developers, I approach each challenge with the same dedication 
                 I bring to training for ultra marathons—persistence, strategic thinking, and a commitment to going the distance.
               </p>

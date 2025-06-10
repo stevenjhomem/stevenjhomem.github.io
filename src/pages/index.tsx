@@ -445,12 +445,12 @@ const Portfolio = () => {
                     {projects[currentProjectIndex].github || projects[currentProjectIndex].live ? (
                       <>
                         {projects[currentProjectIndex].github && (
-                          <a href={projects[currentProjectIndex].github} className="text-gray-400 hover:text-white transition-colors">
+                          <a href={projects[currentProjectIndex].github} className="text-gray-400 hover:text-white transition-colors" target="_blank" rel="noopener noreferrer">
                             <Github size={20} />
                           </a>
                         )}
                         {projects[currentProjectIndex].live && (
-                          <a href={projects[currentProjectIndex].live} className="text-gray-400 hover:text-white transition-colors">
+                          <a href={projects[currentProjectIndex].live} className="text-gray-400 hover:text-white transition-colors" target="_blank" rel="noopener noreferrer">
                             <ExternalLink size={20} />
                           </a>
                         )}
@@ -516,12 +516,12 @@ const Portfolio = () => {
                           {project.github || project.live ? (
                             <>
                               {project.github && (
-                                <a href={project.github} className="text-gray-400 hover:text-white transition-colors">
+                                <a href={project.github} className="text-gray-400 hover:text-white transition-colors" target="_blank" rel="noopener noreferrer">
                                   <Github size={20} />
                                 </a>
                               )}
                               {project.live && (
-                                <a href={project.live} className="text-gray-400 hover:text-white transition-colors">
+                                <a href={project.live} className="text-gray-400 hover:text-white transition-colors" target="_blank" rel="noopener noreferrer">
                                   <ExternalLink size={20} />
                                 </a>
                               )}

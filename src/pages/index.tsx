@@ -89,7 +89,7 @@ const Portfolio = () => {
       document.removeEventListener('wheel', handleWheel);
       if (resetTimer) clearTimeout(resetTimer);
     };
-  }, [activeSection, isMobile, sections.length]);
+  }, [activeSection, isMobile, sections]);
 
   // Smooth scroll to section
   const scrollToSection = (sectionIndex: number) => {

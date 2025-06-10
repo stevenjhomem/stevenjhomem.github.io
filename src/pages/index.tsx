@@ -176,7 +176,11 @@ const Portfolio = () => {
     if (!touchStart || !touchEnd) return;
     const distance = touchStart - touchEnd;
     if (Math.abs(distance) > 50) {
-      distance > 0 ? nextProject() : prevProject();
+      if (distance > 0) {
+        nextProject();
+      } else {
+        prevProject();
+      }
     }
   };
 

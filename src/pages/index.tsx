@@ -4,6 +4,17 @@ import { Github, Linkedin, Mail, ExternalLink, Menu, X, Code, User } from 'lucid
 // Add type for wheel event
 type Direction = 'up' | 'down' | null;
 
+// Add interface for project type
+interface Project {
+  title: string;
+  description: string;
+  tech: string[];
+  github: string;
+  live: string;
+  image: string;
+  position?: 'prev' | 'current' | 'next';
+}
+
 const Portfolio = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState(0);
@@ -120,46 +131,32 @@ const Portfolio = () => {
     return () => observer.disconnect();
   }, [isProgrammaticScroll, sections]);
 
-  const projects = [
+  const projects: Project[] = [
     {
-      title: "E-Commerce Platform",
-      description: "Full-stack e-commerce solution built with Next.js, Stripe, and PostgreSQL. Features include user authentication, product management, and payment processing.",
-      tech: ["Next.js", "TypeScript", "Stripe", "PostgreSQL", "Tailwind CSS"],
-      github: "https://github.com/stevenjhomem/ecommerce-platform",
-      live: "https://ecommerce-demo.stevenjhomem.dev",
-      image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=400&fit=crop"
+      title: "Coffee Cabana",
+      description: "A coffee shop website built with Next.js, TypeScript, and Tailwind CSS. Features include a menu, a blog, and a contact form.",
+      tech: ["Next.js", "TypeScript", "Tailwind CSS"],
+      github: "",
+      live: "",
+      image: "/images/coffee_cabana_logo.png"
     },
     {
-      title: "Task Management Dashboard",
-      description: "React-based project management tool with drag-and-drop functionality, real-time updates, and team collaboration features.",
-      tech: ["React", "Node.js", "Socket.io", "MongoDB", "Express"],
-      github: "https://github.com/stevenjhomem/task-dashboard",
-      live: "https://tasks.stevenjhomem.dev",
-      image: "https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=600&h=400&fit=crop"
+      title: "Core Health and Performance",
+      description: "A React-Native app built with a focus on gamification, health tracking, performance metrics, and improving patient engagement.",
+      tech: ["React Native", "Node.js", "PostgreSQL", "Express", "AWS S3", "MediaConvert", "Auth0", "Socket.io", "AWS", "Stripe"],
+      github: "",
+      live: "",
+      image: "/images/core_1_orig.png"
     },
     {
-      title: "Weather Analytics App",
-      description: "Weather tracking application with data visualization, location-based forecasts, and historical weather data analysis.",
-      tech: ["Vue.js", "D3.js", "Python", "FastAPI", "Chart.js"],
-      github: "https://github.com/stevenjhomem/weather-analytics",
-      live: "https://weather.stevenjhomem.dev",
-      image: "https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?w=600&h=400&fit=crop"
-    },
-    {
-      title: "AI Chat Application",
-      description: "Modern chat application with AI integration, real-time messaging, and smart conversation features built with React and OpenAI API.",
-      tech: ["React", "OpenAI API", "Node.js", "Socket.io", "Redis"],
-      github: "https://github.com/stevenjhomem/ai-chat-app",
-      live: "https://chat.stevenjhomem.dev",
-      image: "https://images.unsplash.com/photo-1587560699334-cc4ff634909a?w=600&h=400&fit=crop"
-    },
-    {
-      title: "Portfolio Analytics",
-      description: "Advanced analytics dashboard for tracking portfolio performance with interactive charts and real-time data visualization.",
-      tech: ["React", "D3.js", "Chart.js", "Python", "FastAPI"],
-      github: "https://github.com/stevenjhomem/portfolio-analytics",
-      live: "https://analytics.stevenjhomem.dev",
-      image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop"
+      title: "Kindred Barn",
+      description: "Developing a more comprehensive user management and reservation system for a Squarespace-based business, implementing " +
+      "custom workflows that extend beyond the platform's current native capabilities. The solution provides seamless user experiences while " +
+      "maintaining the client's existing design and branding.",
+      tech: ["SquareSpace"],
+      github: "",
+      live: "https://www.kindredbarn.com/",
+      image: "images/kindred_barn_logo.png"
     }
   ];
 
@@ -345,7 +342,7 @@ const Portfolio = () => {
             <a href="https://linkedin.com/in/stevenjhomem" className="text-gray-400 hover:text-white transition-colors" target="_blank" rel="noopener noreferrer">
               <Linkedin size={24} />
             </a>
-            <a href="mailto:steven@stevenjhomem.dev" className="text-gray-400 hover:text-white transition-colors">
+            <a href="mailto:steve.homem@gmail.com" className="text-gray-400 hover:text-white transition-colors">
               <Mail size={24} />
             </a>
           </div>
@@ -412,9 +409,13 @@ const Portfolio = () => {
                 onTouchMove={handleTouchMove}
                 onTouchEnd={handleTouchEnd}
               >
-                <div className="h-48 bg-gradient-to-br from-purple-600/20 to-pink-600/20 flex items-center justify-center">
+                <div className="h-48 bg-gradient-to-br from-purple-600/20 to-pink-600/20 flex items-center justify-center overflow-hidden">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={projects[currentProjectIndex].image} alt={projects[currentProjectIndex].title} className="w-full h-full object-cover" />
+                  <img 
+                    src={projects[currentProjectIndex].image} 
+                    alt={projects[currentProjectIndex].title} 
+                    className="w-full h-full object-contain p-4" 
+                  />
                 </div>
                 
                 <div className="p-6">
@@ -428,14 +429,23 @@ const Portfolio = () => {
                       </span>
                     ))}
                   </div>
-                  
                   <div className="flex space-x-4">
-                    <a href={projects[currentProjectIndex].github} className="text-gray-400 hover:text-white transition-colors">
-                      <Github size={20} />
-                    </a>
-                    <a href={projects[currentProjectIndex].live} className="text-gray-400 hover:text-white transition-colors">
-                      <ExternalLink size={20} />
-                    </a>
+                    {projects[currentProjectIndex].github || projects[currentProjectIndex].live ? (
+                      <>
+                        {projects[currentProjectIndex].github && (
+                          <a href={projects[currentProjectIndex].github} className="text-gray-400 hover:text-white transition-colors">
+                            <Github size={20} />
+                          </a>
+                        )}
+                        {projects[currentProjectIndex].live && (
+                          <a href={projects[currentProjectIndex].live} className="text-gray-400 hover:text-white transition-colors">
+                            <ExternalLink size={20} />
+                          </a>
+                        )}
+                      </>
+                    ) : (
+                      <span className="text-gray-400 text-sm italic">Coming soon</span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -469,9 +479,13 @@ const Portfolio = () => {
                     } ${project.position === 'prev' ? '-translate-x-4' : project.position === 'next' ? 'translate-x-4' : ''}`}
                   >
                     <div className="bg-white/5 backdrop-blur-sm rounded-xl overflow-hidden border border-white/10 hover:border-purple-400/50 transition-all w-80">
-                      <div className="h-48 bg-gradient-to-br from-purple-600/20 to-pink-600/20 flex items-center justify-center">
+                      <div className="h-48 bg-gradient-to-br from-purple-600/20 to-pink-600/20 flex items-center justify-center overflow-hidden">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={project.image} alt={project.title} className="w-full h-full object-cover" />
+                        <img 
+                          src={project.image} 
+                          alt={project.title} 
+                          className="w-full h-full object-contain p-4" 
+                        />
                       </div>
                       
                       <div className="p-6">
@@ -487,12 +501,22 @@ const Portfolio = () => {
                         </div>
                         
                         <div className="flex space-x-4">
-                          <a href={project.github} className="text-gray-400 hover:text-white transition-colors">
-                            <Github size={20} />
-                          </a>
-                          <a href={project.live} className="text-gray-400 hover:text-white transition-colors">
-                            <ExternalLink size={20} />
-                          </a>
+                          {project.github || project.live ? (
+                            <>
+                              {project.github && (
+                                <a href={project.github} className="text-gray-400 hover:text-white transition-colors">
+                                  <Github size={20} />
+                                </a>
+                              )}
+                              {project.live && (
+                                <a href={project.live} className="text-gray-400 hover:text-white transition-colors">
+                                  <ExternalLink size={20} />
+                                </a>
+                              )}
+                            </>
+                          ) : (
+                            <span className="text-gray-400 text-sm italic">Coming soon</span>
+                          )}
                         </div>
                       </div>
                     </div>

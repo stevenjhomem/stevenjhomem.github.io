@@ -288,7 +288,7 @@ const Portfolio = () => {
               View My Work
             </button>
             <a 
-              href="https://docs.google.com/document/d/16KWzcQGSUxSWBZrgoUnTye2oNe_LOWDhvi5BG-SfIr0/edit?usp=sharing"
+              href="/resume.pdf"
               target="_blank"
               rel="noopener noreferrer"
               className="border border-purple-400 text-purple-400 px-8 py-3 rounded-lg font-semibold hover:bg-purple-400 hover:text-white transition-all flex items-center justify-center space-x-2"

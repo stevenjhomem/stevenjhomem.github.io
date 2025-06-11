@@ -1,19 +1,11 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Github, Linkedin, Mail, ExternalLink, Menu, X, Code, User } from 'lucide-react';
+import { sections, projects, skills } from '@/constants/homepage';
+import { Project } from '@/types/homepage';
 
 // Add type for wheel event
 type Direction = 'up' | 'down' | null;
 
-// Add interface for project type
-interface Project {
-  title: string;
-  description: string;
-  tech: string[];
-  github: string;
-  live: string;
-  image: string;
-  position?: 'prev' | 'current' | 'next';
-}
 
 const Portfolio = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -23,8 +15,6 @@ const Portfolio = () => {
   const [currentProjectIndex, setCurrentProjectIndex] = useState(0);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
-
-  const sections = useMemo(() => ['home', 'about', 'projects'], []);
 
   // Check if mobile on mount
   useEffect(() => {
@@ -131,42 +121,6 @@ const Portfolio = () => {
     return () => observer.disconnect();
   }, [isProgrammaticScroll, sections]);
 
-  const projects: Project[] = [
-    {
-      title: "Coffee Cabana",
-      description: "A coffee shop website built with Next.js, TypeScript, and Tailwind CSS. Features include a menu, a blog, and a contact form.",
-      tech: ["Next.js", "TypeScript", "Tailwind CSS"],
-      github: "",
-      live: "",
-      image: "/images/coffee_cabana_logo.png"
-    },
-    {
-      title: "Core Health and Performance",
-      description: "A React-Native app built with a focus on gamification, health tracking, performance metrics, and improving patient engagement.",
-      tech: ["React Native", "Node.js", "PostgreSQL", "Express", "AWS S3", "MediaConvert", "Auth0", "Socket.io", "AWS", "Stripe"],
-      github: "",
-      live: "",
-      image: "/images/core_1_orig.png"
-    },
-    {
-      title: "Kindred Barn",
-      description: "Developing a more comprehensive user management and reservation system for a Squarespace-based business, implementing " +
-        "custom workflows that extend beyond the platform's current native capabilities.",
-      tech: ["SquareSpace"],
-      github: "",
-      live: "https://www.kindredbarn.com/",
-      image: "/images/kindred_barn_logo.png"
-    },
-    {
-      title: "Banana Eco-Camp",
-      description: "A custom web application designed to establish Banana Eco Camp&apos;s independent digital presence, consolidating their scattered " +
-      "third-party listings into a cohesive, brand-controlled booking ecosystem.",
-      tech: ["Next.js", "Tailwind CSS", "Framer Motion", "Firebase", "Stripe", "Resend"],
-      github: "",
-      live: "",
-      image: "/images/banana_eco_camp_logo.png"
-    }
-  ];
 
   // Carousel navigation functions
   const nextProject = () => setCurrentProjectIndex((prev) => (prev + 1) % projects.length);
@@ -203,13 +157,6 @@ const Portfolio = () => {
       { ...projects[nextIndex], position: 'next' }
     ];
   };
-
-  const skills = [
-    { category: "Frontend", items: ["React", "Next.js", "TypeScript", "ElasticUI", "Vue.js", "Angular.js", "Jest", "Playwright"] },
-    { category: "Backend", items: ["Node.js", "Python", "Django", "Django Ninja", "FastAPI", "PostgreSQL", "Express"] },
-    { category: "Infrastructure & DevOps", items: ["Git", "Docker", "Kubernetes", "Argo Workflows", "Linux"] },
-    { category: "Observability & Logging", items: ["Splunk", "OpenSearch", "ElasticSearch", "Logstash", "Kibana"] }
-  ];
 
   return (
     <div className="h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 md:overflow-hidden overflow-y-auto scrollbar-hide">

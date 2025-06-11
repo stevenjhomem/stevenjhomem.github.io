@@ -314,26 +314,28 @@ const Portfolio = () => {
         className={`mobile-section flex items-center justify-center px-4 fade-section pt-20 md:pt-0 ${!isMobile ? (activeSection === 1 ? 'block' : 'hidden') : 'block'}`}
       >
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl font-bold text-white text-center mb-4 md:mb-16">About Me</h2>
+          <h2 className="text-4xl font-bold text-white text-center mb-4">About Me</h2>
+          <div className="flex justify-center mb-8 md:mb-16">
+            <div className="flex flex-wrap gap-1.5 justify-center">
+              {selfDescriptions.map((description, index) => (
+                <span key={index} className="bg-purple-600/20 text-purple-400 px-2 py-0.5 rounded-full text-xs md:text-sm md:px-3 md:py-1">{description}</span>
+              ))}
+            </div>
+          </div>
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
               {aboutMeParagraphs.map((paragraph, index) => (
                 <p key={index} className="text-gray-300 text-lg leading-relaxed">{paragraph}</p>
               ))}
-              <div className="flex flex-wrap gap-2">
-                {selfDescriptions.map((description, index) => (
-                  <span key={index} className="bg-purple-600/20 text-purple-400 px-3 py-1 rounded-full text-sm">{description}</span>
-                ))}
-              </div>
             </div>
             
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {skills.map((skillGroup, index) => (
                 <div key={index} className="bg-white/5 backdrop-blur-sm rounded-lg p-6 border border-white/10">
-                  <h3 className="text-purple-400 font-semibold mb-3">{skillGroup.category}</h3>
-                  <ul className="grid grid-cols-2 gap-x-4 gap-y-2">
+                  <h3 className="text-purple-400 font-semibold mb-3 text-center md:text-left">{skillGroup.category}</h3>
+                  <ul className="grid grid-cols-2 gap-x-8 gap-y-2 px-4 md:px-0">
                     {skillGroup.items.map((skill, skillIndex) => (
-                      <li key={skillIndex} className="text-gray-300 text-sm">{skill}</li>
+                      <li key={skillIndex} className="text-gray-300 text-sm text-center md:text-left">{skill}</li>
                     ))}
                   </ul>
                 </div>
@@ -346,7 +348,7 @@ const Portfolio = () => {
       {/* Projects Section */}
       <section 
         id="projects" 
-        className={`mobile-section flex items-center justify-center px-4 fade-section overflow-hidden pt-20 md:pt-0 ${!isMobile ? (activeSection === 2 ? 'block' : 'hidden') : 'block'}`}
+        className={`mobile-section flex items-center justify-center px-4 pb-24 fade-section overflow-hidden pt-20 md:pt-0 ${!isMobile ? (activeSection === 2 ? 'block' : 'hidden') : 'block'}`}
       >
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl font-bold text-white text-center mb-16">Featured Projects</h2>

@@ -21,8 +21,6 @@ const Portfolio = () => {
   const [isProgrammaticScroll, setIsProgrammaticScroll] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [currentProjectIndex, setCurrentProjectIndex] = useState(0);
-  const [touchStart, setTouchStart] = useState<number | null>(null);
-  const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
   // Check if mobile on mount
   useEffect(() => {
@@ -133,26 +131,6 @@ const Portfolio = () => {
   // Carousel navigation functions
   const nextProject = () => setCurrentProjectIndex((prev) => (prev + 1) % projects.length);
   const prevProject = () => setCurrentProjectIndex((prev) => (prev - 1 + projects.length) % projects.length);
-
-  // Touch handlers for mobile swipe
-  const handleTouchStart = (e: React.TouchEvent) => {
-    setTouchEnd(null);
-    setTouchStart(e.targetTouches[0].clientX);
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => setTouchEnd(e.targetTouches[0].clientX);
-
-  const handleTouchEnd = () => {
-    if (!touchStart || !touchEnd) return;
-    const distance = touchStart - touchEnd;
-    if (Math.abs(distance) > 50) {
-      if (distance > 0) {
-        nextProject();
-      } else {
-        prevProject();
-      }
-    }
-  };
 
   // Get projects for desktop carousel (current + adjacent)
   const getDesktopProjects = () => {
@@ -357,10 +335,7 @@ const Portfolio = () => {
           <div className="md:hidden">
             <div className="relative">
               <div 
-                className="bg-white/5 backdrop-blur-sm rounded-xl overflow-hidden border border-white/10 hover:border-purple-400/50 transition-all"
-                onTouchStart={handleTouchStart}
-                onTouchMove={handleTouchMove}
-                onTouchEnd={handleTouchEnd}
+                className="bg-white/5 backdrop-blur-sm rounded-xl overflow-hidden border border-white/10 hover:border-purple-400/50 transition-all max-h-[70vh] overflow-y-auto"
               >
                 <div className="h-48 bg-gradient-to-br from-purple-600/20 to-pink-600/20 flex items-center justify-center overflow-hidden">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -402,6 +377,20 @@ const Portfolio = () => {
                   </div>
                 </div>
               </div>
+
+              {/* Mobile Navigation Arrows */}
+              <button 
+                onClick={prevProject}
+                className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-all"
+              >
+                <span className="text-2xl font-bold">‹</span>
+              </button>
+              <button 
+                onClick={nextProject}
+                className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-all"
+              >
+                <span className="text-2xl font-bold">›</span>
+              </button>
               
               {/* Mobile Dots Indicator */}
               <div className="flex justify-center mt-6 space-x-2">

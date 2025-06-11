@@ -18,3 +18,12 @@ export interface SectionButton {
     label: string;
     icon: React.ElementType;
 }
+
+export interface SocialButton {
+    type: React.ElementType;
+    size: number;
+    href: string;
+    className: string;
+    target: string;
+    rel: string;
+}

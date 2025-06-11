@@ -1,6 +1,6 @@
 import { Github, Linkedin, Mail, Code, User , Handshake } from 'lucide-react';
 
-import { Section, Project, SectionButton, SocialButtons } from "@/types/homepage";
+import { Section, Project, SectionButton, SocialButton } from "@/types/homepage";
 
 export const sections: Section[] = ['home', 'about', 'projects'];
 
@@ -54,7 +54,7 @@ export const sectionButtons: SectionButton[] = [
     { id: 'projects', label: 'Projects', icon: Code }
   ];
 
-export const socialButtons: SocialButtons[] = [
+export const socialButtons: SocialButton[] = [
     { type: Github, size: 24, href: 'https://github.com/stevenjhomem', className: 'text-gray-400 hover:text-white transition-colors', target: '_blank', rel: 'noopener noreferrer' },
     { type: Linkedin, size: 24, href: 'https://linkedin.com/in/stevenjhomem', className: 'text-gray-400 hover:text-white transition-colors', target: '_blank', rel: 'noopener noreferrer' },
     { type: Mail, size: 24, href: 'mailto:steve.homem@gmail.com', className: 'text-gray-400 hover:text-white transition-colors', target: '', rel: '' }

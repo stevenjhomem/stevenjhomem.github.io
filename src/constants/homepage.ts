@@ -71,3 +71,4 @@ export const socialButtons: SocialButtons[] = [
     "applications or mentoring emerging developers, I approach each challenge with the same dedication " +
     "I bring to training for ultra marathons—persistence, strategic thinking, and a commitment to going the distance."
   ]
+  

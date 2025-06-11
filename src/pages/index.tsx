@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { Github, Linkedin, Mail, ExternalLink, Menu, X, Code, User , Handshake } from 'lucide-react';
+import React, { useState, useEffect  } from 'react';
+import { ExternalLink, Menu, X } from 'lucide-react';
 import {
   sections, 
   projects, 
@@ -9,7 +9,7 @@ import {
   selfDescriptions,
   aboutMeParagraphs
 } from '@/constants/homepage';
-import { Project, Section } from '@/types/homepage';
+import { Section } from '@/types/homepage';
 
 // Add type for wheel event
 type Direction = 'up' | 'down' | null;

@@ -1,7 +1,15 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Github, Linkedin, Mail, ExternalLink, Menu, X, Code, User } from 'lucide-react';
-import { sections, projects, skills } from '@/constants/homepage';
-import { Project } from '@/types/homepage';
+import { Github, Linkedin, Mail, ExternalLink, Menu, X, Code, User , Handshake } from 'lucide-react';
+import {
+  sections, 
+  projects, 
+  skills, 
+  sectionButtons, 
+  socialButtons, 
+  selfDescriptions,
+  aboutMeParagraphs
+} from '@/constants/homepage';
+import { Project, Section } from '@/types/homepage';
 
 // Add type for wheel event
 type Direction = 'up' | 'down' | null;
@@ -100,7 +108,7 @@ const Portfolio = () => {
         
         const mostVisible = entries.reduce((acc, entry) => {
           if (entry.isIntersecting && entry.intersectionRatio > acc.visibility) {
-            const sectionIndex = sections.indexOf(entry.target.id);
+            const sectionIndex = sections.indexOf(entry.target.id as Section);
             return sectionIndex !== -1 ? { index: sectionIndex, visibility: entry.intersectionRatio } : acc;
           }
           return acc;
@@ -209,11 +217,7 @@ const Portfolio = () => {
             
             {/* Desktop Navigation */}
             <div className="hidden md:flex space-x-8">
-              {[
-                { id: 'home', label: 'Home', icon: User },
-                { id: 'about', label: 'About', icon: User },
-                { id: 'projects', label: 'Projects', icon: Code }
-              ].map(({ id, label, icon: Icon }, index) => (
+              {sectionButtons.map(({ id, label, icon: Icon }, index) => (
                 <button
                   key={id}
                   onClick={() => scrollToSection(index)}
@@ -295,15 +299,11 @@ const Portfolio = () => {
           </div>
 
           <div className="flex justify-center space-x-6 mt-12">
-            <a href="https://github.com/stevenjhomem" className="text-gray-400 hover:text-white transition-colors" target="_blank" rel="noopener noreferrer">
-              <Github size={24} />
-            </a>
-            <a href="https://linkedin.com/in/stevenjhomem" className="text-gray-400 hover:text-white transition-colors" target="_blank" rel="noopener noreferrer">
-              <Linkedin size={24} />
-            </a>
-            <a href="mailto:steve.homem@gmail.com" className="text-gray-400 hover:text-white transition-colors">
-              <Mail size={24} />
-            </a>
+            {socialButtons.map(({ type: Icon, size, href, className, target, rel }, index) => (
+              <a key={index} href={href} className={className} target={target} rel={rel}>
+                <Icon size={size} />
+              </a>
+            ))}
           </div>
         </div>
       </section>
@@ -317,21 +317,13 @@ const Portfolio = () => {
           <h2 className="text-4xl font-bold text-white text-center mb-4 md:mb-16">About Me</h2>
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
-              <p className="text-gray-300 text-lg leading-relaxed">
-                I am a passionate full-stack developer driven by dual missions: creating exceptional web applications and 
-                cultivating the people who build them. My technical expertise spans modern JavaScript and Python frameworks, 
-                cloud and containerization technologies, and Cybersecurity but I&apos;m equally invested in helping teams and 
-                individuals thrive in their careers. 
-              </p>
-              <p className="text-gray-300 text-lg leading-relaxed">
-                I believe technology is only as strong as the people behind it. Whether I&apos;m architecting scalable 
-                applications or mentoring emerging developers, I approach each challenge with the same dedication 
-                I bring to training for ultra marathons—persistence, strategic thinking, and a commitment to going the distance.
-              </p>
+              {aboutMeParagraphs.map((paragraph, index) => (
+                <p key={index} className="text-gray-300 text-lg leading-relaxed">{paragraph}</p>
+              ))}
               <div className="flex flex-wrap gap-2">
-                <span className="bg-purple-600/20 text-purple-400 px-3 py-1 rounded-full text-sm">Problem Solver</span>
-                <span className="bg-purple-600/20 text-purple-400 px-3 py-1 rounded-full text-sm">Curious</span>
-                <span className="bg-purple-600/20 text-purple-400 px-3 py-1 rounded-full text-sm">Continuous Learner</span>
+                {selfDescriptions.map((description, index) => (
+                  <span key={index} className="bg-purple-600/20 text-purple-400 px-3 py-1 rounded-full text-sm">{description}</span>
+                ))}
               </div>
             </div>
             
@@ -515,10 +507,10 @@ const Portfolio = () => {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 px-4 bg-black/20">
+      <footer className="fixed bottom-0 left-0 right-0 py-8 px-4 bg-black/20 backdrop-blur-sm z-10">
         <div className="max-w-6xl mx-auto text-center">
           <p className="text-gray-400">
-            © 2025 Steven J. Homem. Built with Next.js and ShadCN.
+            © 2025 Steven J. Homem. Built with Next.js.
           </p>
         </div>
       </footer>

@@ -12,3 +12,9 @@ export interface Project {
   image: string;
   position?: 'prev' | 'current' | 'next';
 }
+
+export interface SectionButton {
+    id: Section;
+    label: string;
+    icon: React.ElementType;
+}

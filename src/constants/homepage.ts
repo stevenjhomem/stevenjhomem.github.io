@@ -1,4 +1,6 @@
-import { Section, Project } from "@/types/homepage";
+import { Github, Linkedin, Mail, Code, User , Handshake } from 'lucide-react';
+
+import { Section, Project, SectionButton, SocialButtons } from "@/types/homepage";
 
 export const sections: Section[] = ['home', 'about', 'projects'];
 
@@ -46,3 +48,26 @@ export const skills = [
     { category: "Observability & Logging", items: ["Splunk", "OpenSearch", "ElasticSearch", "Logstash", "Kibana"] }
   ];
 
+export const sectionButtons: SectionButton[] = [
+    { id: 'home', label: 'Home', icon: User },
+    { id: 'about', label: 'About', icon: Handshake },
+    { id: 'projects', label: 'Projects', icon: Code }
+  ];
+
+export const socialButtons: SocialButtons[] = [
+    { type: Github, size: 24, href: 'https://github.com/stevenjhomem', className: 'text-gray-400 hover:text-white transition-colors', target: '_blank', rel: 'noopener noreferrer' },
+    { type: Linkedin, size: 24, href: 'https://linkedin.com/in/stevenjhomem', className: 'text-gray-400 hover:text-white transition-colors', target: '_blank', rel: 'noopener noreferrer' },
+    { type: Mail, size: 24, href: 'mailto:steve.homem@gmail.com', className: 'text-gray-400 hover:text-white transition-colors', target: '', rel: '' }
+  ];
+
+  export const selfDescriptions = ["Builder & Cultivator", "Endurance-Minded", "Impact Driven"]
+
+  export const aboutMeParagraphs = [
+    "I am a passionate full-stack developer driven by dual missions: creating exceptional web applications and " +
+    "cultivating the people who build them. My technical expertise spans modern JavaScript and Python frameworks, " +
+    "cloud and containerization technologies, and Cybersecurity but I&apos;m equally invested in helping teams and " +
+    "individuals thrive in their careers. ",
+    "I believe technology is only as strong as the people behind it. Whether I&apos;m architecting scalable " +
+    "applications or mentoring emerging developers, I approach each challenge with the same dedication " +
+    "I bring to training for ultra marathons—persistence, strategic thinking, and a commitment to going the distance."
+  ]

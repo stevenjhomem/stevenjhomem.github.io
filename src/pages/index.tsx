@@ -1,5 +1,5 @@
 import React, { useState, useEffect  } from 'react';
-import { ExternalLink, Menu, X } from 'lucide-react';
+import { ExternalLink, Menu, X, Github } from 'lucide-react';
 import {
   sections, 
   projects, 

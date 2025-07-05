@@ -9,8 +9,8 @@ export const projects: Project[] = [
         title: "Coffee Cabana",
         description: "A coffee shop website built with Next.js, TypeScript, and Tailwind CSS. Features include a menu, a blog, and a contact form.",
         tech: ["Next.js", "TypeScript", "Tailwind CSS"],
-        github: "",
-        live: "",
+        github: "https://github.com/stevenjhomem/coffee-cabana",
+        live: "https://www.coffeecabana.pt",
         image: "/images/coffee_cabana_logo.png"
       },
       {
